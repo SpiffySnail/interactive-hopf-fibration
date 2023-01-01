@@ -1,0 +1,55 @@
+import numpy as np
+from mayavi import mlab
+
+# Define a function to generate points on the 3-sphere
+def sphere_points(theta, phi, r):
+    x = r * np.sin(theta) * np.cos(phi)
+    y = r * np.sin(theta) * np.sin(phi)
+    z = r * np.cos(theta)
+    return x, y, z
+
+# Generate points on the 3-sphere using spherical coordinates
+r = 1  # radius of the sphere
+N = 50  # number of points
+theta, phi = np.linspace(0, np.pi, N), np.linspace(0, 2*np.pi, N)
+THETA, PHI = np.meshgrid(theta, phi)
+x, y, z = sphere_points(THETA, PHI, r)
+
+# Create a 3D figure
+fig = mlab.figure(bgcolor=(1, 1, 1))
+
+# Plot the 3-sphere
+mlab.mesh(x, y, z, color=(0.5, 0.5, 0.5))
+
+# Define a function to generate points on the 2-sphere
+def circle_points(theta, r):
+    x = r * np.cos(theta)
+    y = r * np.sin(theta)
+    z = 0
+    return x, y, z
+
+# Generate points on the 2-sphere using polar coordinates
+N = 50  # number of points
+theta, phi = np.linspace(0, np.pi, N), np.linspace(0, 2*np.pi, N)
+X, Y = np.meshgrid(theta, phi)
+x, y, z = sphere_points(X, Y, r)
+
+
+# Plot the 2-sphere
+mlab.plot3d(np.reshape(x, (-1, 1)), np.reshape(y, (-1, 1)), np.reshape(z, (-1, 1)), color=(0, 0, 0), tube_radius=0.05)
+
+
+# Add a point at the North Pole of the 2-sphere
+mlab.points3d(0, 0, r, color=(0, 0, 0), scale_factor=0.1)
+
+# Add a point at the South Pole of the 2-sphere
+mlab.points3d(0, 0, -r, color=(0, 0, 0), scale_factor=0.1)
+
+# Add a line connecting the North Pole of the 3-sphere to the North Pole of the 2-sphere
+mlab.plot3d([0, 0], [0, 0], [-r, r], color=(0, 0, 0), tube_radius=0.05)
+
+# Add a line connecting the South Pole of the 3-sphere to the South Pole of the 2-sphere
+mlab.plot3d([0, 0], [0, 0], [r, -r], color=(0, 0, 0), tube_radius=0.05)
+
+# Show the figure
+mlab.show()
